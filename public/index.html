@@ -10,12 +10,13 @@
             <div class="user-info-div">
 
                 <div class="form-container">
-                    <form>
+                    <form autocomplete="off" onsubmit="return false">
                         <h2 id="form-title">Login</h2>
+                        <h2 id="login-message">FAIL</h2>
                         
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" placeholder="Enter Email...">
+                            <input type="email" id="email" placeholder="Enter Email..." autocomplete="off">
                         </div>
 
                         <div class="form-group">
@@ -23,7 +24,7 @@
                             <input type="password" id="password" placeholder="Enter password...">
                         </div>
 
-                        <button type="submit">Login</button>
+                        <button id="login-register" type="submit">Login</button>
                         <p id="toggle-text">Need to register? <span id="toggle-link">Register</span></p>
 
                     </form>
@@ -41,6 +42,71 @@
 
 
         <script>
+
+            //to toggle login/register, start as Login
+            let isLogin = true
+
+            //Switch login to register if clicked
+            document.getElementById("toggle-link").addEventListener("click",()=>{
+                isLogin = !isLogin;
+
+                if(isLogin){
+                    document.getElementById("form-title").innerText = "Login";
+                    document.getElementById("login-register").innerText = "Login";
+                    document.getElementById("toggle-link").innerText = "Register";
+                }else{
+                    document.getElementById("form-title").innerText = "Register";
+                    document.getElementById("login-register").innerText = "Register";
+                    document.getElementById("toggle-link").innerText = "Login";
+                }
+            });
+
+            //login and register logic
+            document.getElementById("login-register").addEventListener("click", () =>{
+                
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+
+                const response = await fetch("/login-register", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({email: email, password: password})
+                });
+            });
+
+
+                //if isLogin
+                if(isLogin){
+
+
+
+
+
+
+
+                    //if user not registered
+
+                } else{
+                    //user is registering
+
+
+
+
+
+
+                        //if user already registered
+
+                }
+
+                    
+
+                
+
+                    
+
+            });
+
+
 
         </script>
 
