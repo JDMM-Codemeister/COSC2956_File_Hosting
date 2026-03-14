@@ -114,6 +114,70 @@
 
 
             //Now do protected routes
+            //upload file
+            document.getElementById("file-upload-btn").addEventListener("click", async () =>{
+                const file = document.getElementById("file-input").files[0];
+                const customFilename = document.getElementById("input-box").value;
+                const token = localStorage.getItem("token");
+
+                //if no file
+                if(!file){
+                    document.getElementById("file-messages").innerText = "No file selected";
+                    return;
+                }
+
+                //if no file name given
+                if(customFilename == ""){
+                    document.getElementById("file-messages").innerText = "File name required";
+                    return;
+                }
+
+                //sanitize file name/ext/size
+                const ext = "." + file.name.split(".").pop().toLowerCase();
+
+                if (ext !== ".pdf" && ext !== ".mp4"){
+                    document.getElementById("file-messages").innerText = "Only PDFs and MP4s allowed";
+                    return;
+                }
+
+                //check file size
+                const maxSize = 20 * 1024 * 1024 // 20 mb
+
+                if(file.size > maxSize){
+                    document.getElementById("file-messages").innerText = "File must be under 20 MB";
+                    return;
+                }
+
+                //prevent code injection in name (only alphanumeric, spaces and underscores allowed)
+                if(!/^[a-zA-Z0-9_ ]+$/.test(customFilename)){
+                    document.getElementById("file-messages").innerText = "Name must be alphanumeric, spaces, or underscores";
+                    return;
+                }
+
+
+                //commence upload
+                const formData = new FormData();
+                formData.append("file",file);
+                formData.append("customFilename", customFilename);
+
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    headers: {"Authorization": `Bearer ${token}`},
+                    body: formData
+                });
+
+                //backend response
+                const data = await response.json();
+                document.getElementById("file-messages").innerText = data.message;
+
+
+            });
+
+
+            //delete file
+
+
+            //show files
           
 
 

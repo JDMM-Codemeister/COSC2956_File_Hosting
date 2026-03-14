@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
         cb(null, "uploads/");
     },
     filename: (req,file,cb) => {
-        cb(null, Date.now() + path.extreme(file.originalname));
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 
@@ -149,24 +149,28 @@ app.post("/register", async (req,res) => {
 
 //upload
 app.post("/upload", verifyToken, upload.single("file"), async (req,res) => {
-    const email = req.user.email;
-    const file = req.file;
 
-    //proceed with upload
-    if(!file){
-        return res.json({message: "No file uploaded"});
+    try{
+        const email = req.user.email;
+        const file = req.file;
+        const customFilename = req.body.customFilename;
+
+        //proceed with upload
+        if(!file){
+            return res.json({message: "No file uploaded"});
+        }
+
+        //upload to files db
+        const result = await pool.query("SELECT id from users WHERE email = $1", [email]);
+        const userID = result.rows[0].id;
+
+        await pool.query("INSERT INTO files (user_id, filename, path, file_size) VALUES ($1,$2,$3,$4)", [userID,customFilename,file.path, file.size]);
+
+        return res.json({message: "File was uploaded"});
+    } catch(e){
+        console.error(e);
+        return res.json({message: e.message});
     }
-
-    //sanitize file
-    const fileNewname = file.originalname;
-    //SANITIZE (less than 20 MB, only .pdf and .mp4 supported)
-
-    //upload to files db
-    const result = await pool.query("SELECT id from users WHERE email = $1", [email]);
-    const userID = result.rows[0].id;
-
-    await pool.query("INSERT INTO files (user_id, filename, path) VALUES ($1,$2,$3)", [userID,fileNewname,file.path]);
-
 });
 
 
