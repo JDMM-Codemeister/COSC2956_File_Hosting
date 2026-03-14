@@ -62,49 +62,26 @@
             });
 
             //login and register logic
-            document.getElementById("login-register").addEventListener("click", () =>{
+            document.getElementById("login-register").addEventListener("click", async () =>{
                 
                 const email = document.getElementById("email").value;
                 const password = document.getElementById("password").value;
+                const message = document.getElementById("login-message");
 
-                const response = await fetch("/login-register", {
+                const route = isLogin ? "/login" : "/register";
+
+
+                const response = await fetch(route, {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({email: email, password: password})
                 });
+
+                //show reply message
+                const data = await response.json();
+                message.innerText = data.message;
             });
-
-
-                //if isLogin
-                if(isLogin){
-
-
-
-
-
-
-
-                    //if user not registered
-
-                } else{
-                    //user is registering
-
-
-
-
-
-
-                        //if user already registered
-
-                }
-
-                    
-
-                
-
-                    
-
-            });
+          
 
 
 
