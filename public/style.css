@@ -12,6 +12,7 @@ body{
     padding: 20px;
     gap: 20px;
     box-sizing: border-box;
+    border-radius: 10px;
     flex-direction: row;
     width: 80%;
     height: 80vh;
@@ -22,6 +23,7 @@ body{
     display: flex;
     background-color: rgb(173, 173, 231);
     flex-direction: column;
+    border-radius: 10px;
     justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
@@ -34,6 +36,7 @@ body{
     display: flex;
     background-color: rgb(173, 173, 231);
     flex-direction: column;
+    border-radius: 10px;
     justify-content: right;
     align-items: center;
     flex-wrap: nowrap;

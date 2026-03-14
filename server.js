@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const {Pool} = require("pg");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 const pool = new Pool({
@@ -27,8 +28,10 @@ function isValidPassword(password){
     return /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
 }
 
+
+
 //login
-app.post("/login", (req,res) => {
+app.post("/login", async (req,res) => {
     const email = req.body.email;
     const password = req.body.password
 
@@ -40,19 +43,45 @@ app.post("/login", (req,res) => {
 
     //validate if password is good, retunr message if not
     if(!isValidPassword(password)){
-        return res.json({message: "Password must be at least 8 char long and contain at least one digit and uppercase letter"});
+        return res.json({message: "Password: 8+ char, 1 digit, 1 uppercase "});
     }
 
+    //Login: check if user exists, login if so
+    //Check if user exists, if so return and inform user
+    const queryResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+
+    if(queryResult.rows.length > 0){
+        //user exists, login
+
+        //verify password is correct
+        const result = await pool.query("SELECT password FROM users WHERE email = $1", [email]);
+        const storedPassword = result.rows[0].password;
+
+        const match = await bcrypt.compare(password, storedPassword);
 
 
-    //Login: check if user exists
+        //grant access to files etc.
+        //test message
+        if(match){
+            //access now granted
 
-    //Register: check if user already exists
+            //test message
+            return res.json({message: "Logged in"});
+        }else{
+            return res.json({message: "Invalid credentials"});
+
+        }
+        
+
+    }else{
+        //user does not exist
+        return res.json({message: "User does not exist"});
+    }
 
 });
 
 //register
-app.post("/register", (req,res) => {
+app.post("/register", async (req,res) => {
     const email = req.body.email;
     const password = req.body.password
 
@@ -62,9 +91,28 @@ app.post("/register", (req,res) => {
         return res.json({message: "Invalid input"});
     }
 
-    //Login: check if user exists
+    //Check if user exists, if so return and inform user
+    const queryResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
-    //Register: check if user already exists
+    if(queryResult.rows.length > 0){
+        //user exists
+        return res.json({message: "User already exists"});
+
+    }else{
+        //user does not exist
+
+        //hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        //insert into users DB
+        await pool.query("INSERT INTO users (email, password) VALUES ($1, $2)", [email, hashedPassword])
+
+        //return to login screen
+        return res.json({message: "Successful registration"});
+    }
+
+
+
 
 });
 
