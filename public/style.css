@@ -104,6 +104,31 @@ input{
     margin: -20px 0;
 }
 
+#file-messages{
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(212, 14, 14);
+    margin: -20px 0;
+    display: none;
+}
+
+#input-box{
+    display: none;
+}
+
+#file-buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    display: none;
+}
+
+#file-input{
+    background-color: white;
+    display: none;
+}
+
+
 #toggle-text{
     font-size: 20px;
 }

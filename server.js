@@ -3,6 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const {Pool} = require("pg");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const pool = new Pool({
@@ -12,6 +13,17 @@ const pool = new Pool({
     password: process.env.POSTGRES_PASSWORD,
     port: 5432
 });
+
+const storage = multer.diskStorage({
+    destination: (req,file,cb) => {
+        cb(null, "uploads/");
+    },
+    filename: (req,file,cb) => {
+        cb(null, Date.now() + path.extreme(file.originalname));
+    }
+});
+
+const upload = multer({storage: storage});
 
 
 const app = express();
@@ -28,6 +40,19 @@ function isValidPassword(password){
     return /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
 }
 
+function verifyToken(req,res,next){
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if(!token) return res.json({message: "Missing token"});
+
+    try{
+        const decodedToken = jwt.verify(token, process.env.WEB_TOKEN);
+        req.user = decodedToken;
+        next();
+    }catch{
+        return res.json({message: "Invalid token"});
+    }
+}
 
 
 //login
@@ -65,8 +90,15 @@ app.post("/login", async (req,res) => {
         if(match){
             //access now granted
 
-            //test message
-            return res.json({message: "Logged in"});
+            //issue token to user
+            const token = jwt.sign({email: email}, process.env.WEB_TOKEN, {expiresIn: "1h"});
+
+            //stor token securely in local storage
+            //do logic to access secure files now that has token
+
+            //return token and message
+            return res.json({message: "Logged in", token: token});
+
         }else{
             return res.json({message: "Invalid credentials"});
 
@@ -112,7 +144,28 @@ app.post("/register", async (req,res) => {
     }
 
 
+});
 
+
+//upload
+app.post("/upload", verifyToken, upload.single("file"), async (req,res) => {
+    const email = req.user.email;
+    const file = req.file;
+
+    //proceed with upload
+    if(!file){
+        return res.json({message: "No file uploaded"});
+    }
+
+    //sanitize file
+    const fileNewname = file.originalname;
+    //SANITIZE (less than 20 MB, only .pdf and .mp4 supported)
+
+    //upload to files db
+    const result = await pool.query("SELECT id from users WHERE email = $1", [email]);
+    const userID = result.rows[0].id;
+
+    await pool.query("INSERT INTO files (user_id, filename, path) VALUES ($1,$2,$3)", [userID,fileNewname,file.path]);
 
 });
 

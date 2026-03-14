@@ -12,7 +12,7 @@
                 <div class="form-container">
                     <form autocomplete="off" onsubmit="return false">
                         <h2 id="form-title">Login</h2>
-                        <h2 id="login-message">FAIL</h2>
+                        <h2 id="login-message"></h2>
                         
                         <div class="form-group">
                             <label for="email">Email</label>
@@ -33,7 +33,17 @@
 
             <div class="data-display-div">
                 
-                <div id="welcome-message">Welcome Message</div>
+                <div id="welcome-message">Secure File Hosting</div>
+                <h2 id="file-messages"></h2>
+
+                <input type="file" id="file-input">
+                <input id="input-box" placeholder="Enter name for file..." style="width: 300px; padding: 8px;">
+
+                <div id="file-buttons">
+                    <button id="file-upload-btn" style="padding: 8px;">Upload</button>
+                    <button id="file-delete-btn" style="padding: 8px;">Delete</button>
+                    <button id="show-files-btn" style="padding: 8px;">Show uploaded files</button>
+                </div>
 
             </div>
 
@@ -81,7 +91,29 @@
                 //show reply message
                 const data = await response.json();
                 message.innerText = data.message;
+
+                //store token upon successful login and message generation
+                if(data.token){
+                    localStorage.setItem("token", data.token);
+
+                    //make "got to files page" button appear
+                    document.querySelector(".user-info-div").style.display = "none";
+                    document.querySelector(".data-display-div").style.display = "flex";
+                    document.getElementById("welcome-message").innerText = `Welcome, ${email}`;
+                    document.querySelector(".data-display-div").style.width = "100%";
+
+
+                    //make file options appear
+                    document.getElementById("file-input").style.display = "inline";
+                    document.getElementById("input-box").style.display = "inline";
+                    document.getElementById("file-buttons").style.display = "block";
+                    document.getElementById("file-messages").style.display = "block";
+
+                }
             });
+
+
+            //Now do protected routes
           
 
 
