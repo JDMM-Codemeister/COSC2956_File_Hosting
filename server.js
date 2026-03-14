@@ -1,6 +1,17 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const {Pool} = require("pg");
+require("dotenv").config();
+
+const pool = new Pool({
+    user: "postgres",
+    host: "localhost",
+    database: process.env.POSTGRES_DB,
+    password: process.env.POSTGRES_PASSWORD,
+    port: 5432
+});
+
 
 const app = express();
 
@@ -33,15 +44,10 @@ app.post("/login", (req,res) => {
     }
 
 
-    
 
     //Login: check if user exists
 
     //Register: check if user already exists
-
-
-
-
 
 });
 
@@ -56,19 +62,11 @@ app.post("/register", (req,res) => {
         return res.json({message: "Invalid input"});
     }
 
-
-    
-
     //Login: check if user exists
 
     //Register: check if user already exists
 
-
-
-
-
 });
-
 
 
 
