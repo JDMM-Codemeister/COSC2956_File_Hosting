@@ -123,6 +123,10 @@ input{
     display: none;
 }
 
+#hide-files-btn{
+    display: none;
+}
+
 #file-input{
     background-color: white;
     display: none;
