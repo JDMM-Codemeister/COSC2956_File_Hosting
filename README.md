@@ -22,7 +22,7 @@
 
 ## POST /login  
 - This route takes the user's inputted email and password (which have been prescreen by the "submit" buttons functionality) from the req body.  
-- isValidEmail() is run on the email, which uses REGEXs to esnsure a proper format is used (alphanumeric@alphanumeric.alphabet).  
+- isValidEmail() is run on the email, which uses REGEXs to esnsure a proper format is used (alphanumeric@alphanumeric.alphanumeric).  
 - isValidPassword() is run on the password, which uses REGEXs to ensure proper format (8+ char, 1+ digit, 1+ uppercase). 
 - The email is queried against the users table, if there is a match, the given password is compared with the saved hashed password using *bcrypt*.  
 - If the password is matched with the stored hashed password, a token is issues using JSON Web Token (*jwt*), and sent to the user in the res.   
