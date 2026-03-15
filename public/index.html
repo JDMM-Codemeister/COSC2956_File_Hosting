@@ -96,7 +96,7 @@
                 if(data.token){
                     localStorage.setItem("token", data.token);
 
-                    //make "got to files page" button appear
+                    //make "go to files page" button appear
                     document.querySelector(".user-info-div").style.display = "none";
                     document.querySelector(".data-display-div").style.display = "flex";
                     document.getElementById("welcome-message").innerText = `Welcome, ${email}`;
@@ -175,6 +175,28 @@
 
 
             //delete file
+            document.getElementById("file-delete-btn").addEventListener("click", async () => {
+                const file = document.getElementById("input-box").value;
+                const token = localStorage.getItem("token");
+
+                 //if no file name given
+                if(file == ""){
+                    document.getElementById("file-messages").innerText = "File name required";
+                    return;
+                }
+
+                const response = await fetch("/delete", {
+                    method: "DELETE",
+                    headers: {"Content-Type": "application/json","Authorization": `Bearer ${token}`},
+                    body: JSON.stringify({customFilename: file})
+                });
+
+                const data = await response.json();
+                document.getElementById("file-messages").innerText = data.message;
+
+            });
+
+
 
 
             //show files

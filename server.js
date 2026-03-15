@@ -5,6 +5,7 @@ const {Pool} = require("pg");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const fs = require("fs");
 
 const pool = new Pool({
     user: "postgres",
@@ -93,8 +94,6 @@ app.post("/login", async (req,res) => {
             //issue token to user
             const token = jwt.sign({email: email}, process.env.WEB_TOKEN, {expiresIn: "1h"});
 
-            //stor token securely in local storage
-            //do logic to access secure files now that has token
 
             //return token and message
             return res.json({message: "Logged in", token: token});
@@ -173,6 +172,44 @@ app.post("/upload", verifyToken, upload.single("file"), async (req,res) => {
     }
 });
 
+
+//delete
+app.delete("/delete", verifyToken, async (req,res) => {
+    try{
+        const email = req.user.email;
+        const filenameDelete = req.body.customFilename;
+
+        //get user id
+        const result = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
+        const userID = result.rows[0].id;
+
+        //should only work if there is a good match
+        const fileResults = await pool.query("SELECT path FROM files WHERE filename = $1 AND user_id =$2", [filenameDelete, userID]);
+
+        //if no file found
+        if(fileResults.rowCount === 0){
+            return res.json({message: "File not found"});
+        }
+
+
+        //delete DB entry before delete from uploads/
+        //delete if user id matches uploader id (from DB)
+        const deleted = await pool.query("DELETE FROM files WHERE user_id = $1 AND filename = $2", [userID, filenameDelete]);
+
+
+        //now delete from uploads/
+        const pathToDelete = fileResults.rows[0].path;
+        fs.unlinkSync(pathToDelete);
+
+        //upon good delete
+        return res.json({message: "File deleted"});
+
+
+    }catch(e){
+        console.error(e);
+        return res.json({message: e.message});
+    }
+});
 
 
 app.listen(3000, () => {
