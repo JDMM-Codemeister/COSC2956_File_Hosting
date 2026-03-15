@@ -122,6 +122,11 @@ app.post("/register", async (req,res) => {
         return res.json({message: "Invalid input"});
     }
 
+    //added this after so check if works
+    if(!isValidPassword(password)){
+        return res.json({message: "Password: 8+ char, 1 digit, 1 uppercase "});
+    }
+
     //Check if user exists, if so return and inform user
     const queryResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
@@ -237,7 +242,6 @@ app.get("/show-my-files", verifyToken, async (req,res) => {
 });
 
 
-//download route
 
 
 app.listen(3000, () => {
