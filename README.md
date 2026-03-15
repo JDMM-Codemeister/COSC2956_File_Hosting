@@ -2,7 +2,7 @@
 1. Install PostgreSQL (psql) on computer
 2. Set up psql database (DB)
 3. Make 2 tables in psql DB
-  1. files -   
+  1. *files* -   
     Column    |            Type             | Collation | Nullable |              Default
   -------------+-----------------------------+-----------+----------+-----------------------------------
    id          | integer                     |           | not null | nextval('files_id_seq'::regclass)
@@ -15,7 +15,7 @@
       "files_pkey" PRIMARY KEY, btree (id)
   Foreign-key constraints:
       "files_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)  
-  2. users -    
+  2. *users* -    
   Column   |            Type             | Collation | Nullable |              Default
   ------------+-----------------------------+-----------+----------+-----------------------------------
    id         | integer                     |           | not null | nextval('users_id_seq'::regclass)
@@ -27,7 +27,7 @@
       "users_email_key" UNIQUE CONSTRAINT, btree (email)
   Referenced by:
       TABLE "files" CONSTRAINT "files_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)  
-      
+
 
 #Endpoints#  
 
