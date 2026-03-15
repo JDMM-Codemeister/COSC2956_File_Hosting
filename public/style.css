@@ -129,6 +129,25 @@ input{
     margin-top: 20px;
 }
 
+#file-display-div{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 5px;
+    padding: 20px;
+    gap: 5px;
+    display: none;
+    width: 90%;
+    box-sizing: border-box;
+}
+
+#uploaded-files{
+    font-size: 20px;
+    text-align: left;
+    width: 100%;
+    display: none;
+}
+
 
 #toggle-text{
     font-size: 20px;

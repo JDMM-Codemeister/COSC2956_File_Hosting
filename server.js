@@ -211,6 +211,21 @@ app.delete("/delete", verifyToken, async (req,res) => {
     }
 });
 
+//show files route
+app.get("/show-all-files", verifyToken, async (req,res) =>{
+
+    const results = await pool.query("SELECT files.filename, files.file_size, files.uploaded_at, users.email FROM files JOIN users ON files.user_id = users.id");
+
+    return res.json({files: results.rows});
+
+
+});
+
+//show My Files route
+
+
+//download route
+
 
 app.listen(3000, () => {
     console.log("Server running on http://localhost:3000");

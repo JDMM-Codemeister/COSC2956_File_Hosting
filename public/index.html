@@ -42,7 +42,14 @@
                 <div id="file-buttons">
                     <button id="file-upload-btn" style="padding: 8px;">Upload</button>
                     <button id="file-delete-btn" style="padding: 8px;">Delete</button>
-                    <button id="show-files-btn" style="padding: 8px;">Show uploaded files</button>
+                    <button id="show-all-files-btn" style="padding: 8px;">Show all files</button>
+                    <button id="show-my-files-btn" style="padding: 8px;">Show my files</button>
+                    <button id="download-btn" style="padding: 8px;">Download file</button>
+                </div>
+
+                <div id="file-display-div">
+                    <p id="uploaded-files"></p>
+
                 </div>
 
             </div>
@@ -197,9 +204,41 @@
             });
 
 
+            //show all files
+            document.getElementById("show-all-files-btn").addEventListener("click", async () =>{
+                document.getElementById("file-display-div").style.display = "block";
+                document.getElementById("uploaded-files").style.display = "block";
+                document.getElementById("uploaded-files").style.textAlign = "center";
+
+                const token = localStorage.getItem("token");
 
 
-            //show files
+                const response = await fetch("/show-all-files",{
+                    method: "GET",
+                    headers: {"Authorization": `Bearer ${token}`}
+                });
+
+                const data = await response.json();
+
+                //string from array
+                let fileList = "File | User | Size (bytes) | Upload Date\n";
+                data.files.forEach(line => {
+                    fileList += `${line.filename} | ${line.email} | ${line.file_size} | ${line.uploaded_at}\n`;
+                });
+
+
+                document.getElementById("uploaded-files").innerText = fileList;
+
+                //add a refresh function to show updated fileList
+
+            });
+
+
+            //Show My Files
+
+
+            //download files
+
           
 
 
