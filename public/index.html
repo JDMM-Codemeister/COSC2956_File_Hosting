@@ -210,7 +210,10 @@
                 document.getElementById("uploaded-files").style.display = "block";
                 document.getElementById("uploaded-files").style.textAlign = "center";
 
+                //add hide files button only on show-files
+
                 const token = localStorage.getItem("token");
+
 
 
                 const response = await fetch("/show-all-files",{
@@ -219,8 +222,7 @@
                 });
 
                 const data = await response.json();
-
-                //string from array
+                    //string from array
                 let fileList = "File | User | Size (bytes) | Upload Date\n";
                 data.files.forEach(line => {
                     fileList += `${line.filename} | ${line.email} | ${line.file_size} | ${line.uploaded_at}\n`;
@@ -229,12 +231,39 @@
 
                 document.getElementById("uploaded-files").innerText = fileList;
 
-                //add a refresh function to show updated fileList
-
             });
 
 
             //Show My Files
+            document.getElementById("show-my-files-btn").addEventListener("click", async () =>{
+                document.getElementById("file-display-div").style.display = "block";
+                document.getElementById("uploaded-files").style.display = "block";
+                document.getElementById("uploaded-files").style.textAlign = "center";
+
+                //add hide files button only on show-files
+                
+
+                const token = localStorage.getItem("token");
+
+                const response = await fetch("/show-my-files",{
+                    method: "GET",
+                    headers: {"Authorization": `Bearer ${token}`}
+                });
+
+                const data = await response.json();
+                 //for test
+                console.log(data);
+
+                let fileList = "File | User | Size (bytes) | Upload Date\n";
+                data.files.forEach(line =>{
+                    fileList += `${line.filename} | ${line.email} | ${line.file_size} | ${line.uploaded_at}\n`;
+                });
+
+                document.getElementById("uploaded-files").innerText = fileList;
+
+            });
+
+            //make a "hide files" buton? (not 100x necessary but easy)
 
 
             //download files

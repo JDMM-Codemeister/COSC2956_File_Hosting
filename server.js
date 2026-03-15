@@ -222,6 +222,19 @@ app.get("/show-all-files", verifyToken, async (req,res) =>{
 });
 
 //show My Files route
+app.get("/show-my-files", verifyToken, async (req,res) => {
+    try{
+        const email = req.user.email;
+
+        const results = await pool.query("SELECT files.filename, files.file_size, files.uploaded_at, users.email FROM files JOIN users ON files.user_id = users.id WHERE users.email = $1", [email]);
+
+        return res.json({files: results.rows});
+    }catch(e){
+        console.error(e);
+        return res.json({message: e.message});
+    }
+
+});
 
 
 //download route
