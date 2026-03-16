@@ -4,9 +4,9 @@
 2. Set up psql database (DB)
 3. Make 2 tables in psql DB
   - **files**  
-  ![files](/files_table.png)
+  ![files](screenshots/files_table.png)
   - **users**  
-  ![files](/users_table.png)  
+  ![files](screenshots/users_table.png)  
 4. Make sure all packages in package.json are installed
 5. **IMPORTANT** Need to add your own .env file with the following variables (for your database):  
   - POSTGRES_DB="*yourDB*"  
