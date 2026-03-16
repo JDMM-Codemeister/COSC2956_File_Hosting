@@ -16,6 +16,7 @@
 7. Create an uploads/ directory  
 8. Run *node server.js*  
 9. Go to *http://localhost:3000*  
+10. *NOTE* node-modules/ wasn't added to repo, make sure you have it after installing necessary modules.  
 
 
 # Endpoints  
